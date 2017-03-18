@@ -9,16 +9,18 @@ import GithubApp from "./ui/githubApp";
 import GithubAPI from "./api/github";
 import RepoStore from "./stores/repo";
 import IssueStore from "./stores/issue";
+import StarStore from "./stores/stars";
 import "./index.css";
 
 // wire up dependencies
 const githubAPI = new GithubAPI({ 
-  userToken: "e1ee0744f87186125f468ea4ade77674cb7979cd"
+  userToken: "74f72617c44ba42a8fccef7853e0ecfbeec42a92"
 });
 const sessionStore = new SessionStore({ githubAPI });
 const viewStore = new ViewStore();
 const repoStore = new RepoStore({ githubAPI, sessionStore });
 const issueStore = new IssueStore({ githubAPI, sessionStore });
+const starStore = new StarStore({ githubAPI, sessionStore })
 
 // render the whole application
 // provider is a kind of dependency injection system
@@ -26,7 +28,7 @@ function renderApp() {
   ReactDOM.render(
     <div>
       <DevTools position={{ bottom: 0, right: 10 }} />
-      <Provider sessionStore={sessionStore} viewStore={viewStore} repoStore={repoStore} issueStore={issueStore}>
+      <Provider starStore={starStore} sessionStore={sessionStore} viewStore={viewStore} repoStore={repoStore} issueStore={issueStore}>
         <GithubApp />
       </Provider>
     </div>,

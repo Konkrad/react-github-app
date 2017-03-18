@@ -2,19 +2,19 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import { PENDING, REJECTED, FULFILLED } from "mobx-utils";
 import { Spinner, Button } from "@blueprintjs/core";
-export default inject("repoStore", "sessionStore", "viewStore")(
+export default inject("starStore", "sessionStore")(
   observer(
     class RepositoryList extends React.Component {
-      constructor({ repoStore, sessionStore }) {
+      constructor({ starStore, sessionStore }) {
         super();
-        repoStore.fetchRepos();
+        starStore.fetchStars();
       }
       renderRepoList() {
-        const {sessionStore, repoStore, viewStore} = this.props;
+        const {sessionStore, starStore} = this.props;
 
         if (sessionStore.authenticated) {
-          const repoDeferred = repoStore.repoDeferred;
-          const state = repoDeferred.state;
+          const starDeferred = starStore.starDeferred;
+          const state = starDeferred.state;
           switch (state) {
             case PENDING: {
               return <Spinner />;
@@ -29,20 +29,21 @@ export default inject("repoStore", "sessionStore", "viewStore")(
                   </div> 
                   <h4 className="pt-non-ideal-state-title">Error occured</h4>
                   <div className="pt-non-ideal-state-description">
-                    <Button onClick={repoStore.fetchRepos} text="retry"/>
+                    <Button onClick={starStore.fetchStars} text="retry"/>
                   </div>
                 </div>
               );
             }
             case FULFILLED: {
-              const repos = repoDeferred.value;
+              const stars = starDeferred.value;
               return (
-                  repos.map((repo) => {
-                    return <div onClick={() => viewStore.push(viewStore.routes.issue({repo: repo.name}))}>
-                        {repo.name}
+                  stars.map((star) => {
+                    return <div>
+                        {star.name}
                     </div>
                   })
               )
+              // TODO: implement list of repos
               break;
             }
             default: {
@@ -56,7 +57,7 @@ export default inject("repoStore", "sessionStore", "viewStore")(
       render() {
         return (
           <div>
-            <h1>Repos</h1>
+            <h1>Stars</h1>
             {this.renderRepoList()}
           </div>
         );

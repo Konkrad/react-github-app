@@ -3,6 +3,7 @@ import { extendObservable, computed } from "mobx";
 import React from "react";
 import Issue from "../ui/issue";
 import RepositoryList from "../ui/repositoryList";
+import StarList from "../ui/StarsList";
 import RouteNotFound from "../ui/routeNotFound";
 import myro from "myro";
 
@@ -34,7 +35,7 @@ export default class ViewStore {
           case "about": {
             return {
               ...route,
-              component: () => <div>about</div>
+              component: StarList
             };
           }
           case "repos": {
