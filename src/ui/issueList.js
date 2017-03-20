@@ -29,7 +29,7 @@ export default inject("issueStore", "sessionStore", "viewStore")(
 
               return(
                 issue.map((issue) => {
-                  return <div onClick={() => viewStore.push(viewStore.routes.issue({repo, id: issue.number}))} key={issue.id} >{issue.title} {issue.number}</div>
+                  return <div onClick={() => viewStore.push(viewStore.routes.issue.id({repo, id: issue.number}))} key={issue.id} >{issue.title}</div>
                 })
               )
             }

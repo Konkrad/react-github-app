@@ -27,10 +27,11 @@ const fields = [
 ];
 
 class IssueForm extends MobxReactForm {
-  constructor(fields, options, issueStore, repo) {
+  constructor(fields, options, issueStore, repo, number) {
     super(fields, options);
     this.issueStore = issueStore;
     this.repo = repo;
+    this.number = number
 
     extendObservable(this, {
       issuePostDeferred: fromPromise(Promise.resolve())
@@ -39,14 +40,19 @@ class IssueForm extends MobxReactForm {
 
   onSuccess(form) {
     const { title, text } = form.values();
-    const resultPromise = this.issueStore.postIssue(this.repo, title, text);
+    let resultPromise;
+    if(this.number) {
+      resultPromise = this.issueStore.updateIssue(this.repo, title, text, this.number)
+    } else {
+      resultPromise = this.issueStore.postIssue(this.repo, title, text);
+    }
     resultPromise
       .then(() => Toaster.create({ position: Position.TOP }).show({
-        message: "issue posted",
+        message: "issue posted/updated",
         intent: Intent.SUCCESS
       }))
       .catch(() => Toaster.create({ position: Position.TOP }).show({
-        message: "failed posting issue",
+        message: "failed posting/updating issue",
         action: { text: "retry", onClick: () => form.submit() },
         intent: Intent.DANGER
       }));
@@ -85,13 +91,14 @@ export default inject("issueStore")(
     class IssueFormComponent extends React.Component {
       constructor({ issueStore, route , values}) {
         super();
-        console.log("values?", values)
         const repo = route.params.repo;
+        const options = { fields}
+        if(values) {
+          options.values = values
+        }
         this.state = {
-          form: new IssueForm({ fields , values}, { plugins }, issueStore, repo)
-        };
-        const number = route.params.id;
-        
+          form: new IssueForm(options, { plugins }, issueStore, repo, route.params.id)
+        };        
       }
       render() {
         const { form } = this.state;
@@ -100,7 +107,7 @@ export default inject("issueStore")(
         return (
           <Provider form={form}>
             <div>
-            <h3>issue for {route.params.repo}</h3>
+            <h3>issue {route.params && route.params.id} for {route.params.repo}</h3>
             <FormComponent />
             </div>
           </Provider>
