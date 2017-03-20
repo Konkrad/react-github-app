@@ -37,6 +37,10 @@ export default inject("issueStore")(
             }
           }
         }
+        return {
+          title: "titel",
+          text: "text"
+        }
       }
       render() {
         const {route} = this.props;
