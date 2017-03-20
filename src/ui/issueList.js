@@ -26,6 +26,9 @@ export default inject("issueStore", "sessionStore", "viewStore")(
             }
             case FULFILLED: {
               const issue = issueDeferred.value;
+              if(issue.length === 0) {
+                return <p>no issues found</p>
+              }
 
               return(
                 issue.map((issue) => {
