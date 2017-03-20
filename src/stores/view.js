@@ -13,7 +13,12 @@ const routeDefinitions = {
   "/": "home",
   "/repos": "repos",
   "/about": "about",
-  "/issue/:repo": "issue"
+  "/issue/:repo": {
+    "name": "issue",
+    "routes": {
+      "/:id": "id"
+    } 
+  }
 };
 
 const routes = myro(routeDefinitions);
@@ -31,7 +36,7 @@ export default class ViewStore {
       push: url => history.push(url),
       currentView: computed(() => {
         const route = routes(this.location) || {};
-        switch (route.name) {
+        switch ((route.name || "").split(".")[0]) {
           case "about": {
             return {
               ...route,

@@ -4,7 +4,7 @@ import { PENDING, REJECTED, FULFILLED } from "mobx-utils";
 import { Spinner, Button } from "@blueprintjs/core";
 export default inject("starStore", "sessionStore")(
   observer(
-    class RepositoryList extends React.Component {
+    class StarList extends React.Component {
       constructor({ starStore, sessionStore }) {
         super();
         starStore.fetchStars();

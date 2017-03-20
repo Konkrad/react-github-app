@@ -68,7 +68,27 @@ export default class GithubAPI {
     });
   };
 
-  getIssues = ({login, repo}) => {
+  updateIssue = ({ login, repo, number, title, text }) => {
+    return fetch(`https://api.github.com/repos/${login}/${repo}/issues/${number}`, {
+      method: "PATCH",
+      headers: {
+        ...this.defaultHeaders,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: title,
+        body: text
+      })
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return Promise.reject();
+      }
+    });
+  };
+
+  fetchIssues = ({login}, repo) => {
     return fetch(`https://api.github.com/repos/${login}/${repo}/issues`, {
       headers: {
         ...this.defaultHeaders
@@ -81,3 +101,4 @@ export default class GithubAPI {
       }
     });
   };
+}
